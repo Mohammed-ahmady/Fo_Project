@@ -78,5 +78,10 @@ namespace Cs_Fo_Project
                 MessageBox.Show("Please Sure From Your User Name And Password ");
             }
         }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }

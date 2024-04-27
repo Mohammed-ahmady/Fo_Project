@@ -11,7 +11,7 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace Cs_Fo_Project
 {
-    public partial class Admin : Form 
+    public partial class Admin : Form
     {
         FileStream fs;
         StreamReader sr;
@@ -34,7 +34,7 @@ namespace Cs_Fo_Project
 
 
         }
-        String Folder = "C:\\Fo";
+        String Folder = "E:\\Fo Project\\Fo_Project";
         private void Create_File_Click(object sender, EventArgs e)
         {
             string Path = File_Name.Text;
@@ -167,11 +167,11 @@ namespace Cs_Fo_Project
 
         private void Exit_file_btn_Click(object sender, EventArgs e)
         {
-            Form1 f = new  Form1();
+            Form1 f = new Form1();
 
             f.Close();
             this.Close();
-  
+
 
         }
 
@@ -223,15 +223,35 @@ namespace Cs_Fo_Project
             }
         }
 
-      
+
 
         private void Price_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (e.KeyChar == (char)Keys.Enter)
             {
-               
+
                 add_into_index.PerformClick();
             }
+        }
+
+        private void update_Click(object sender, EventArgs e)
+        {
+            string ispn = ISPN_text.Text;
+
+            if (dic.ContainsKey(int.Parse(ISPN_text.Text)))
+            {
+                fs.Seek(dic[int.Parse(ISPN_text.Text)], SeekOrigin.Begin);
+                sw.Write("*");
+                sw.Close();
+                fs.Flush();
+                return;
+
+            }
+            else
+            {
+                Title_Text.Text = Author_Text.Text = Publish_text.Text = Price_Text.Text = "Not Found";
+            }
+
         }
     }
 }
