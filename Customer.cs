@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System;
 using System.Net.Http;
+using System.Diagnostics;
 using HtmlAgilityPack;
 using Newtonsoft.Json.Linq;
 
@@ -20,12 +21,12 @@ namespace Cs_Fo_Project
     {
 
         private const string GoogleBooksApiBaseUrl = "https://www.googleapis.com/books/v1/volumes";
-       // private readonly HttpClient httpClient;
+        // private readonly HttpClient httpClient;
         HttpClient httpClient = new HttpClient();
         public Customer()
         {
             InitializeComponent();
-           
+
         }
 
         string Directory_Name = "E:\\Fo Project\\Fo_Project";
@@ -53,7 +54,7 @@ namespace Cs_Fo_Project
             return All_data;
         }
 
-        
+
 
         private void Customer_Load(object sender, EventArgs e)
         {
@@ -78,7 +79,80 @@ namespace Cs_Fo_Project
             comboBox1.Items.AddRange(secondValuesArray);
         }
 
-        public async void description(HttpClient httpClient, string name)
+        public async void photo(string name)
+        {
+            string apiKey = "AIzaSyDVPJsh1wm7hXcFqLJKzG7azW9UryVYJzo";
+            string searchQuery = name; 
+
+            HttpClient httpClient = new HttpClient();
+
+            try
+            {
+                string apiUrl = $"https://www.googleapis.com/books/v1/volumes?q={searchQuery}&key={apiKey}";
+                HttpResponseMessage response = await httpClient.GetAsync(apiUrl);
+                response.EnsureSuccessStatusCode();
+
+                string responseBody = await response.Content.ReadAsStringAsync();
+
+                dynamic apiResponse = Newtonsoft.Json.JsonConvert.DeserializeObject(responseBody);
+
+                string bookTitle = apiResponse.items[0].volumeInfo.title;
+                string coverImageUrl = apiResponse.items[0].volumeInfo.imageLinks.thumbnail;
+                string bookSourceUrl = apiResponse.items[0].volumeInfo.infoLink;
+
+                
+
+                HttpResponseMessage imageResponse = await httpClient.GetAsync(coverImageUrl);
+                imageResponse.EnsureSuccessStatusCode();
+
+                string imagePath = "cover.jpg"; 
+                using (var imageStream = await imageResponse.Content.ReadAsStreamAsync())
+                using (var fileStream = new System.IO.FileStream(imagePath, System.IO.FileMode.Create))
+                {
+                    await imageStream.CopyToAsync(fileStream);
+                }
+
+                Console.WriteLine("Cover image downloaded successfully.");
+
+                
+                pictureBox1.Image = Image.FromFile(imagePath);
+                pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
+
+                pictureBox1.Size = pictureBox1.Image.Size;
+
+                pictureBox1.Click += (sender, e) =>
+                {
+                    try
+                    {
+                        string bookName = name;
+                        string wikipediaUrl = $"https://en.wikipedia.org/wiki/{bookName}";
+
+                        Process.Start(new ProcessStartInfo
+                        {
+                            FileName = "explorer.exe",
+                            Arguments = wikipediaUrl
+                        });
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("An error occurred while trying to open the Wikipedia page: " + ex.Message);
+                    }
+                };
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error: {ex.Message}");
+            }
+            finally
+            {
+                httpClient.Dispose();
+            }
+
+        }
+    
+    
+   public async void description(HttpClient httpClient, string name)
         {
             if (httpClient == null)
             {
@@ -163,6 +237,7 @@ namespace Cs_Fo_Project
                 {
                     label4.Text = textBox1.Text;
                     description(httpClient, line);
+                    photo(line);
 
                 }
             }
