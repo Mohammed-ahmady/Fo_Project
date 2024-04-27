@@ -5,19 +5,30 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System;
+using System.Net.Http;
+using HtmlAgilityPack;
+using Newtonsoft.Json.Linq;
 
 namespace Cs_Fo_Project
 {
+
     public partial class Customer : Form
     {
+
+        private const string GoogleBooksApiBaseUrl = "https://www.googleapis.com/books/v1/volumes";
+       // private readonly HttpClient httpClient;
+        HttpClient httpClient = new HttpClient();
         public Customer()
         {
             InitializeComponent();
+           
         }
 
-        string Directory_Name = "C:\\FO";
+        string Directory_Name = "E:\\Fo Project\\Fo_Project";
 
 
         static LinkedList<string> StoreDataInLinkedList(string Directory_Name)
@@ -42,7 +53,7 @@ namespace Cs_Fo_Project
             return All_data;
         }
 
-
+        
 
         private void Customer_Load(object sender, EventArgs e)
         {
@@ -67,7 +78,65 @@ namespace Cs_Fo_Project
             comboBox1.Items.AddRange(secondValuesArray);
         }
 
-        private void button1_Click(object sender, EventArgs e) // Search By Title 
+        public async void description(HttpClient httpClient, string name)
+        {
+            if (httpClient == null)
+            {
+                // Handle the case when httpClient is null
+                textBox5.Text = "HTTP client is not initialized.";
+                return;
+            }
+
+            if (string.IsNullOrEmpty(name))
+            {
+                // Handle the case when name is null or empty
+                textBox5.Text = "Invalid name.";
+                return;
+            }
+
+            string bookTitle = name;
+
+            // Call the Google Books API to search for the book
+            string searchUrl = $"{GoogleBooksApiBaseUrl}?q={Uri.EscapeDataString(bookTitle)}&key=AIzaSyDVPJsh1wm7hXcFqLJKzG7azW9UryVYJzo";
+            HttpResponseMessage response = await httpClient.GetAsync(searchUrl);
+
+            if (response.IsSuccessStatusCode)
+            {
+                // Read the response content
+                string responseContent = await response.Content.ReadAsStringAsync();
+
+                // Parse the JSON response
+                JObject json = JObject.Parse(responseContent);
+                JArray items = (JArray)json["items"];
+
+                if (items.Count > 0)
+                {
+                    // Extract the book description from the response
+                    JObject firstItem = (JObject)items[0];
+                    JObject volumeInfo = (JObject)firstItem["volumeInfo"];
+                    string description = volumeInfo.Value<string>("description");
+
+                    // Display the description in the console
+                    textBox5.Text =  description ?? "No description found.";
+                }
+                else
+                {
+                    // No books found
+                    textBox5.Text = "No books found.";
+                }
+            }
+            else
+            {
+                // Request failed
+                textBox5.Text = "Request failed.";
+            }
+
+            
+        }
+    
+
+
+        private  void button1_Click(object sender, EventArgs e) // Search By Title 
         {
             LinkedList<string> All_data = StoreDataInLinkedList(Directory_Name);
 
@@ -87,20 +156,17 @@ namespace Cs_Fo_Project
             string[] secondValuesArray = list_Data.ToArray();
 
 
-
+          
             foreach (string line in secondValuesArray)
             {
                 if (line == textBox1.Text)
                 {
                     label4.Text = textBox1.Text;
-                    label5.Text = "\"Game of Thrones\" is renowned for its intricate plot\n, memorable characters, and unexpected twists and turns.\n It explores themes of power, morality, loyalty,\n and the consequences of actions, often challenging traditional fantasy tropes by subverting expectations \nand portraying a morally gray world where no character is safe from harm or death.";
+                    description(httpClient, line);
 
                 }
-
-
             }
         }
-
         private void button2_Click(object sender, EventArgs e)
         {
             LinkedList<string> All_data = StoreDataInLinkedList(Directory_Name);
@@ -164,6 +230,11 @@ namespace Cs_Fo_Project
             textBox3.Text = textBox4.Text = "";
         }
 
+        private void label5_Click(object sender, EventArgs e)
+        {
+
+        }
 
     }
 }
+

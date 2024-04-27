@@ -55,6 +55,7 @@
             File_Name = new TextBox();
             textBox1 = new TextBox();
             label2 = new Label();
+            update = new Button();
             panel1.SuspendLayout();
             SuspendLayout();
             // 
@@ -88,6 +89,7 @@
             // panel1
             // 
             panel1.BackColor = Color.FromArgb(250, 231, 201);
+            panel1.Controls.Add(update);
             panel1.Controls.Add(Create_index_file);
             panel1.Controls.Add(Create_File);
             panel1.Controls.Add(add_into_index);
@@ -99,7 +101,7 @@
             panel1.Location = new Point(867, 37);
             panel1.Margin = new Padding(3, 2, 3, 2);
             panel1.Name = "panel1";
-            panel1.Size = new Size(268, 436);
+            panel1.Size = new Size(268, 470);
             panel1.TabIndex = 53;
             // 
             // Create_index_file
@@ -154,7 +156,7 @@
             Exit_file_btn.FlatStyle = FlatStyle.Popup;
             Exit_file_btn.Font = new Font("Urdu Typesetting", 12F, FontStyle.Bold | FontStyle.Italic, GraphicsUnit.Point);
             Exit_file_btn.ForeColor = Color.FromArgb(250, 231, 201);
-            Exit_file_btn.Location = new Point(56, 382);
+            Exit_file_btn.Location = new Point(56, 428);
             Exit_file_btn.Margin = new Padding(3, 2, 3, 2);
             Exit_file_btn.Name = "Exit_file_btn";
             Exit_file_btn.Size = new Size(154, 38);
@@ -185,7 +187,7 @@
             Clear_btn.FlatStyle = FlatStyle.Popup;
             Clear_btn.Font = new Font("Urdu Typesetting", 12F, FontStyle.Bold | FontStyle.Italic, GraphicsUnit.Point);
             Clear_btn.ForeColor = Color.FromArgb(250, 231, 201);
-            Clear_btn.Location = new Point(56, 327);
+            Clear_btn.Location = new Point(56, 373);
             Clear_btn.Margin = new Padding(3, 2, 3, 2);
             Clear_btn.Name = "Clear_btn";
             Clear_btn.Size = new Size(154, 38);
@@ -216,7 +218,7 @@
             Delete_btn.FlatStyle = FlatStyle.Popup;
             Delete_btn.Font = new Font("Urdu Typesetting", 12F, FontStyle.Bold | FontStyle.Italic, GraphicsUnit.Point);
             Delete_btn.ForeColor = Color.FromArgb(250, 231, 201);
-            Delete_btn.Location = new Point(56, 274);
+            Delete_btn.Location = new Point(56, 320);
             Delete_btn.Margin = new Padding(3, 2, 3, 2);
             Delete_btn.Name = "Delete_btn";
             Delete_btn.Size = new Size(154, 38);
@@ -369,6 +371,22 @@
             label2.TabIndex = 57;
             label2.Text = "Number of Index Record";
             // 
+            // update
+            // 
+            update.BackColor = Color.FromArgb(112, 98, 51);
+            update.Cursor = Cursors.Hand;
+            update.FlatStyle = FlatStyle.Popup;
+            update.Font = new Font("Urdu Typesetting", 12F, FontStyle.Bold | FontStyle.Italic, GraphicsUnit.Point);
+            update.ForeColor = Color.FromArgb(250, 231, 201);
+            update.Location = new Point(56, 269);
+            update.Margin = new Padding(3, 2, 3, 2);
+            update.Name = "update";
+            update.Size = new Size(154, 38);
+            update.TabIndex = 9;
+            update.Text = "Update";
+            update.UseVisualStyleBackColor = false;
+            update.Click += update_Click;
+            // 
             // Admin
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -432,5 +450,6 @@
         private TextBox File_Name;
         private TextBox textBox1;
         private Label label2;
+        private Button update;
     }
 }
